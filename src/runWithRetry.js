@@ -3,7 +3,19 @@
 //
 //
 export function runWithRetry(taskFn) {
-  return (...args) => {
-    return taskFn(...args);
+  return async (...args) => {
+    let isResolved = false;
+    let result = null;
+
+    while (!isResolved) {
+      try {
+        result = await taskFn(...args);
+        isResolved = true;
+      } catch (err) {
+        continue;
+      }
+    }
+
+    return result;
   };
 }
